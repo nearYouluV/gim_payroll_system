@@ -26,7 +26,7 @@ async def init_db():
             print("Database already initialized")
             return
         
-        # Create sample user
+        # Create sample user (Admin)
         admin_user = User(
             email="admin@example.com",
             full_name="Admin User",
@@ -41,7 +41,7 @@ async def init_db():
             Employee(
                 employee_code="EMP001",
                 full_name="Ivan Kozlov",
-                email="ivan@example.com",
+                email="ivan.kozlov@company.com",
                 position="Senior Developer",
                 salary=5000.00,
                 is_active=True,
@@ -49,7 +49,7 @@ async def init_db():
             Employee(
                 employee_code="EMP002",
                 full_name="Maria Shevchenko",
-                email="maria@example.com",
+                email="maria.shevchenko@company.com",
                 position="Project Manager",
                 salary=4500.00,
                 is_active=True,
@@ -57,9 +57,33 @@ async def init_db():
             Employee(
                 employee_code="EMP003",
                 full_name="Oleg Petrenko",
-                email="oleg@example.com",
+                email="oleg.petrenko@company.com",
                 position="Frontend Developer",
                 salary=4200.00,
+                is_active=True,
+            ),
+            Employee(
+                employee_code="EMP004",
+                full_name="Natalia Ivanova",
+                email="natalia.ivanova@company.com",
+                position="DevOps Engineer",
+                salary=4800.00,
+                is_active=True,
+            ),
+            Employee(
+                employee_code="EMP005",
+                full_name="Dmitry Sokolov",
+                email="dmitry.sokolov@company.com",
+                position="QA Lead",
+                salary=4100.00,
+                is_active=True,
+            ),
+            Employee(
+                employee_code="EMP006",
+                full_name="Alexandra Melnyk",
+                email="alexandra.melnyk@company.com",
+                position="UI/UX Designer",
+                salary=3900.00,
                 is_active=True,
             ),
         ]
@@ -68,7 +92,19 @@ async def init_db():
             db.add(employee)
         
         await db.commit()
-        print("Database initialized with sample data")
+        
+        print("\n✅ Database initialized with sample data:\n")
+        print("=" * 60)
+        print("ADMIN CREDENTIALS:")
+        print("=" * 60)
+        print(f"Email:    admin@example.com")
+        print(f"Password: admin123")
+        print("\n" + "=" * 60)
+        print("SAMPLE EMPLOYEES:")
+        print("=" * 60)
+        for emp in employees:
+            print(f"{emp.employee_code}: {emp.full_name} ({emp.position}) - ${emp.salary}")
+        print("=" * 60 + "\n")
 
 
 if __name__ == "__main__":

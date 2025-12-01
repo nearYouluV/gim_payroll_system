@@ -19,6 +19,13 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserLogin(BaseModel):
+    """User login schema"""
+
+    email: EmailStr
+    password: str
+
+
 class UserResponse(UserBase):
     """User response schema"""
 

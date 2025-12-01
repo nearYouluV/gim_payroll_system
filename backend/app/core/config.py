@@ -1,5 +1,6 @@
 """Application configuration"""
 
+import os
 from pydantic_settings import BaseSettings
 from typing import List
 
@@ -27,7 +28,8 @@ class Settings(BaseSettings):
     ]
 
     class Config:
-        env_file = ".env"
+        # Only load .env if it exists (for local development)
+        env_file = ".env" if os.path.exists(".env") else None
         case_sensitive = True
 
 
