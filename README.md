@@ -1,53 +1,285 @@
-# Payroll Management System
+# Payroll System
+
+Сучасна система управління заробітною платою з FastAPI бекенду та React фронтенду.
+
+## 🚀 Стек технологій
+
+### Backend
+- **FastAPI** - Асинхронний веб-фреймворк
+- **SQLAlchemy 2.0** - ORM
+- **PostgreSQL** - База даних
+- **AsyncPG** - Асинхронний драйвер PostgreSQL
+- **Pydantic** - Валідація даних
+- **JWT** - Авторизація
+
+### Frontend
+- **React 18** - UI бібліотека
+- **Vite** - Сборщик
+- **React Router** - Маршрутизація
+- **Zustand** - State management
+- **Axios** - HTTP клієнт
+
+### DevOps
+- **Docker** - Контейнеризація
+- **Docker Compose** - Оркестрація контейнерів
+
+## 📋 Архітектура
+
+```
+┌─────────────────┐
+│  React Frontend │
+│   :3000         │
+└────────┬────────┘
+         │
+         │ HTTP/REST
+         │
+┌────────▼────────┐
+│  FastAPI Backend│
+│   :8000         │
+└────────┬────────┘
+         │
+         │ asyncpg
+         │
+┌────────▼────────┐
+│   PostgreSQL    │
+│   :5432         │
+└─────────────────┘
+```
+
+## ⚡ Швидкий старт
+
+### З Docker Compose
+
+```bash
+# Скопіюйте .env файл
+cp backend/.env.example backend/.env
+
+# Запустіть всі сервіси
+docker-compose up --build
+
+# API буде доступний на http://localhost:8000/api/v1
+# Frontend буде доступний на http://localhost:3000
+```
+
+### Локально
+
+#### Backend
+
+```bash
+cd backend
+
+# Створіть віртуальне середовище
+python -m venv venv
+source venv/bin/activate
+
+# Встановіть залежності
+pip install -r requirements.txt
+
+# Запустіть
+uvicorn main:app --reload
+```
+
+#### Frontend
+
+```bash
+cd frontend
+
+# Встановіть залежності
+npm install
+
+# Запустіть dev сервер
+npm run dev
+```
+
+## 📚 Документація
+
+### API
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+- [API Docs](./docs/API.md)
+
+### Розробка
+- [Developer Guide](./docs/DEVELOPMENT.md)
+
+### Папки
+- `/backend` - FastAPI код
+- `/frontend` - React код
+- `/docs` - Документація проекту
+
+## 🗂️ Структура проекту
+
+```
+payroll_system/
+├── backend/                    # FastAPI backend
+│   ├── app/
+│   │   ├── core/              # Конфігурація, безпека
+│   │   ├── db/                # БД, сесії
+│   │   ├── models/            # SQLAlchemy моделі
+│   │   ├── schemas/           # Pydantic схеми
+│   │   ├── routes/            # API маршрути
+│   │   └── services/          # Бізнес-логіка
+│   ├── main.py               # Точка входу
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── frontend/                   # React frontend
+│   ├── src/
+│   │   ├── components/        # React компоненти
+│   │   ├── pages/            # Сторінки
+│   │   ├── services/         # API сервіси
+│   │   ├── hooks/            # Custom хуки
+│   │   ├── store/            # Zustand стори
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── public/
+│   ├── package.json
+│   └── Dockerfile
+│
+├── docs/                       # Документація
+│   ├── API.md
+│   └── DEVELOPMENT.md
+│
+└── docker-compose.yml
+```
+
+## 🔑 Ключові команди
+
+```bash
+# Docker
+docker-compose up              # Запуск всіх сервісів
+docker-compose down            # Зупинення
+docker-compose logs backend    # Логи backend
+docker-compose logs frontend   # Логи frontend
+
+# Backend
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+pytest                         # Тести
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+npm run build
+npm run lint
+```
+
+## 💾 Структура Бази Даних
+
+### Users
+- id (PK)
+- email (UNIQUE)
+- full_name
+- hashed_password
+- is_active
+- created_at
+- updated_at
+
+### Employees
+- id (PK)
+- employee_code (UNIQUE)
+- full_name
+- email (UNIQUE)
+- position
+- salary
+- is_active
+- created_at
+- updated_at
+
+### Payout Requests
+- id (PK)
+- employee_id (FK)
+- amount
+- status (ENUM: pending, approved, rejected, processed)
+- reason
+- created_at
+- updated_at
+
+## 🧪 Тестування
+
+### Backend
+
+```bash
+cd backend
+pytest                # Запуск всіх тестів
+pytest --cov=app     # З покриттям
+pytest -v            # Verbose
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm run lint         # ESLint
+```
+
+## 🌍 API Endpoints
+
+### Auth
+- `POST /auth/register` - Реєстрація користувача
+- `POST /auth/login` - Вхід користувача
+
+### Employees
+- `GET /employees` - Список всіх співробітників
+- `GET /employees/{id}` - Деталі співробітника
+- `POST /employees` - Створення нового співробітника
+- `PUT /employees/{id}` - Оновлення співробітника
+- `DELETE /employees/{id}` - Видалення співробітника
+
+### Health
+- `GET /health` - Перевірка здоров'я API
+
+[Докладна документація API](./docs/API.md)
+
+## 📝 Приклади запитів
+
+### cURL
+
+```bash
+# Реєстрація
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "password": "password123"
+  }'
+
+# Список співробітників
+curl -X GET "http://localhost:8000/employees?skip=0&limit=100" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## 🛠️ Розробка
+
+### Додавання нового ендпоїнту
+
+Дивіться [Developer Guide](./docs/DEVELOPMENT.md) для детальних інструкцій.
+
+## 🚀 Розгортання
+
+### Docker Build
+
+```bash
+# Backend
+docker build -t payroll-backend:latest backend/
+
+# Frontend
+cd frontend && npm run build
+```
+
+## 📄 Ліцензія
+
+MIT
+
+## 👥 Контакти
+
+Для питань та пропозицій відкрийте Issue на GitHub.
+
 ---
 
-## Overview
-The Payroll Management System is a Django-based application designed to handle employee management, payroll, and payout processes. It includes custom user registration, payout request handling, and group-based access controls to ensure secure and efficient operations.
-
----
-
-## Navigation
-- [Overview](#overview)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Admin Panel](#admin-panel)
-  - [Login](#login)
-  - [Employee Management](#employee-management)
-  - [User Registration](#user-registration)
-  - [Payout Requests](#payout-requests)
-- [Code Highlights](#code-highlights)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-- [Running with Docker](#running-with-docker)
-
----
-
-## Features
-- **Employee Management**: 
-  - Create, update, and manage employee records.
-  - Automatically generate unique employee codes.
-
-- **Custom User Registration**:
-  - Link users to employees via employee codes.
-  - Assign users to specific groups like "Accountant" based on their role.
-
-- **Payout Requests**:
-  - Allow employees to request payouts from their available earnings.
-  - Admins can process requests and update balances securely.
-
-- **Group-Based Access Control**:
-  - Accountants have restricted access to payout and payroll data.
-
----
-
-## Requirements
-- Python 3.x
-- Django 5.x
-
----
+Створено з ❤️ для сучасної системи управління заробітною платою
 
 ## Installation
 
