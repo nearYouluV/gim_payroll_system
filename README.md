@@ -52,11 +52,11 @@
 
 ```bash
 # Скопіюйте .env файл
-cp backend/.env.example backend/.env
+cp .env.example .env
 
 # Запустіть всі сервіси
-docker-compose up --build
-
+docker-compose up -d --build
+docker exec payroll_backend python init_db.py
 # API буде доступний на http://localhost:8000/api/v1
 # Frontend буде доступний на http://localhost:3000
 ```

@@ -1,4 +1,4 @@
-"""Sample data initialization script for development"""
+"""Sample data initialization script for development DON'T USE IN PRODUCTION"""
 
 import asyncio
 from sqlalchemy import select

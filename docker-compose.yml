@@ -3,10 +3,12 @@ services:
   db:
     image: postgres:16-alpine
     container_name: payroll_db
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: payroll_user
-      POSTGRES_PASSWORD: payroll_pass
-      POSTGRES_DB: payroll_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -25,11 +27,13 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: payroll_backend
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgresql+asyncpg://payroll_user:payroll_pass@db:5432/payroll_db
-      SECRET_KEY: your-secret-key-change-in-production
-      DEBUG: "True"
-      ALLOWED_ORIGINS: '["http://localhost:3000", "http://localhost:5173"]'
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
     ports:
       - "8000:8000"
     depends_on:
@@ -46,16 +50,15 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     container_name: payroll_frontend
     ports:
-      - "3000:3000"
-    environment:
-      VITE_API_URL: http://localhost:8000
+      - "80:80"
+    env_file:
+      - .env
     depends_on:
       - backend
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
     networks:
       - payroll_network
 
