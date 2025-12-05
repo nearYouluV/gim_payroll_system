@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum as PyEnum
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -25,6 +25,7 @@ class PayoutRequest(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     employee_id: Mapped[int] = mapped_column(ForeignKey("employees.id"))
+    employee: Mapped["Employee"] = relationship("Employee", lazy="joined")
     amount: Mapped[float] = mapped_column(Numeric(10, 2))
     status: Mapped[PayoutStatus] = mapped_column(
         Enum(PayoutStatus), default=PayoutStatus.PENDING
@@ -37,3 +38,8 @@ class PayoutRequest(Base):
 
     def __repr__(self) -> str:
         return f"<PayoutRequest {self.id}>"
+
+    @property
+    def employee_name(self) -> str | None:
+        # Convenience accessor for serialization
+        return self.employee.full_name if getattr(self, "employee", None) else None

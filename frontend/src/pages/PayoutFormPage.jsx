@@ -48,7 +48,6 @@ export default function PayoutFormPage() {
         employee_id: parseInt(formData.employee_id),
         amount: parseFloat(formData.amount),
         reason: formData.reason,
-        status: 'PENDING',
       };
 
       await api.post('/payout-requests', payload);

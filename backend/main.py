@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.session import engine
 from app.routes import auth, employees
+from app.routes import payout_requests
 
 
 @asynccontextmanager
@@ -41,6 +42,7 @@ app.add_middleware(
 # Include routers with /api/v1 prefix
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(employees.router, prefix="/api/v1")
+app.include_router(payout_requests.router, prefix="/api/v1")
 
 
 @app.get("/health")

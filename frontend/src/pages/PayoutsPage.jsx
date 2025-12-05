@@ -16,8 +16,7 @@ export default function PayoutsPage() {
   const fetchPayouts = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/employees');
-      // Extract payout requests from employees (if available)
+      const response = await api.get('/payout-requests');
       setPayouts(response.data);
       setError(null);
     } catch (err) {
@@ -30,8 +29,8 @@ export default function PayoutsPage() {
 
   const handleApprove = async (id) => {
     try {
-      // TODO: Implement approve endpoint
-      console.log('Approve payout:', id);
+      await api.put(`/payout-requests/${id}`, { status: 'approved' });
+      fetchPayouts();
     } catch (err) {
       setError('Failed to approve payout');
     }
@@ -39,8 +38,8 @@ export default function PayoutsPage() {
 
   const handleReject = async (id) => {
     try {
-      // TODO: Implement reject endpoint
-      console.log('Reject payout:', id);
+      await api.put(`/payout-requests/${id}`, { status: 'rejected' });
+      fetchPayouts();
     } catch (err) {
       setError('Failed to reject payout');
     }
@@ -69,6 +68,7 @@ export default function PayoutsPage() {
               <th>Employee</th>
               <th>Amount</th>
               <th>Status</th>
+              <th>Reason</th>
               <th>Created</th>
               <th>Actions</th>
             </tr>
@@ -77,24 +77,27 @@ export default function PayoutsPage() {
             {payouts.map(payout => (
               <tr key={payout.id}>
                 <td>{payout.id}</td>
-                <td>{payout.full_name}</td>
-                <td>${payout.salary.toFixed(2)}</td>
+                <td>{payout.employee_name || `#${payout.employee_id}`}</td>
+                <td>${Number(payout.amount).toFixed(2)}</td>
                 <td>
-                  <span className={`status status-${payout.is_active ? 'active' : 'inactive'}`}>
-                    {payout.is_active ? 'Pending' : 'Inactive'}
+                  <span className={`status status-${payout.status}`}>
+                    {payout.status}
                   </span>
                 </td>
-                <td>{new Date(payout.created_at).toLocaleDateString()}</td>
+                <td>{payout.reason || '—'}</td>
+                <td>{payout.created_at ? new Date(payout.created_at).toLocaleString() : '—'}</td>
                 <td>
                   <button 
                     className="btn-small btn-approve" 
                     onClick={() => handleApprove(payout.id)}
+                    disabled={payout.status === 'approved'}
                   >
                     Approve
                   </button>
                   <button 
                     className="btn-small btn-reject" 
                     onClick={() => handleReject(payout.id)}
+                    disabled={payout.status === 'rejected'}
                   >
                     Reject
                   </button>

@@ -34,6 +34,7 @@ class PayoutRequestResponse(PayoutRequestBase):
 
     id: int
     status: PayoutStatus
+    employee_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
